@@ -8,8 +8,7 @@ datasource db {
 }
 
 model ContactlessPaymentTxOrMsg {
-  uuid                     String   @id
-  verificationCode         String
+  uuid                     String    @id
   payloadType              String
   chainId                  String
   txParams                 Json?
@@ -18,6 +17,9 @@ model ContactlessPaymentTxOrMsg {
   dappName                 String?
   dappUrl                  String?
   txHash                   String?
-  createdAt                DateTime @default(now())
-  updatedAt                DateTime @updatedAt
+  relayClaimedAt           DateTime? // for relay lock
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
+
+  @@index([createdAt]) // cron job performance
 }
