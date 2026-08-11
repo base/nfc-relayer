@@ -2,13 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/cleanup-payments",
-      "schedule": "*/10 * * * *"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/paymentTxParams",
-      "dest": "/api/paymentTxParams.ts"
+      "schedule": "*/2 * * * *"
     }
   ]
 }
