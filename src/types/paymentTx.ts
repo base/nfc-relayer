@@ -3,7 +3,9 @@ export type PayloadType = 'eip681' | 'contractCall' | 'eip712';
 
 export type BasePayload = {
   payloadType: PayloadType;
-  uuid?: string;
+  // `uuid` is deliberately absent: the payment identifier is generated
+  // server-side. Accepting it from the client let callers choose the primary key
+  // of the record, which made stored payments enumerable and squattable.
   chainId: string;
   dappUrl?: string;
   dappName?: string;
