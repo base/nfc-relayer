@@ -38,9 +38,12 @@ describe('getPaymentTxOrMsg', () => {
       where: { uuid: mockUuid },
     });
 
+    // `verificationCode` is deliberately absent. It is the secret that authorizes
+    // submitting a sponsored transaction for this payment, and this read path is
+    // reachable by anyone who knows the uuid. The previous assertion required the
+    // code to be present in the response, which made it worthless as a factor.
     expect(result).toEqual({
       uuid: mockUuid,
-      verificationCode: 'abc123',
       chainId: '1',
       dappUrl: 'https://example.com',
       dappName: 'Test Dapp',
@@ -51,6 +54,7 @@ describe('getPaymentTxOrMsg', () => {
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
     });
+    expect(result).not.toHaveProperty('verificationCode');
   });
 
   it('should throw an error if the payment transaction or message is not found', async () => {

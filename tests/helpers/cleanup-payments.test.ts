@@ -36,14 +36,18 @@ describe('cleanupOldPayments', () => {
         },
       },
     });
-    expect(mockPrismaClient.$disconnect).toHaveBeenCalled();
+    // `$disconnect` must NOT be called. `getPrismaClient` returns a process-wide
+    // singleton shared with every request handler, so disconnecting from a cron
+    // handler tears the connection pool out from under concurrent requests. The
+    // previous assertion required that behaviour.
+    expect(mockPrismaClient.$disconnect).not.toHaveBeenCalled();
   });
 
-  it('should handle errors and disconnect from the database', async () => {
+  it('should rethrow database errors without disconnecting the shared client', async () => {
     const error = new Error('Database error');
     mockDeleteMany.mockRejectedValue(error);
 
     await expect(cleanupOldPayments()).rejects.toThrow('Database error');
-    expect(mockPrismaClient.$disconnect).toHaveBeenCalled();
+    expect(mockPrismaClient.$disconnect).not.toHaveBeenCalled();
   });
 });
